@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Три в ряд - Match 3 Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Background Animated Shapes -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <!-- Top Account & Status Bar -->
+    <div class="user-bar">
+      <div class="user-profile-badge" id="btn-user-profile" title="Профиль игрока">
+        <span class="user-avatar-icon">👤</span>
+        <div class="user-profile-info">
+          <span class="user-name" id="user-display-name">Гость</span>
+          <span class="user-max-level" id="user-max-level">Макс. ур: 1</span>
+        </div>
+      </div>
+
+      <div class="user-bar-actions">
+        <button id="btn-leaderboard" class="btn-top-action" title="Таблица рекордов">
+          <span class="action-icon">🏆</span>
+          <span class="action-label">Рекорды</span>
+        </button>
+        <button id="btn-level-menu" class="btn-top-action" title="Выбор уровня">
+          <span class="action-icon">📑</span>
+          <span class="action-label">Уровни</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Game Header / HUD -->
+    <header class="game-header">
+      <div class="header-left">
+        <h1 class="logo-title">Три в Ряд</h1>
+        <div class="level-badge" id="level-badge">
+          <span class="level-label">Уровень</span>
+          <span class="level-number" id="level-number">1</span>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <button id="btn-sound" class="btn-icon" title="Звук (Вкл/Выкл)" aria-label="Звук">
+          <svg class="icon sound-on-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg class="icon sound-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+        <button id="btn-restart" class="btn-icon" title="Начать уровень заново" aria-label="Рестарт">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+          </svg>
+        </button>
+        <button id="btn-rules" class="btn-icon" title="Правила игры" aria-label="Правила">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats & Objective Bar -->
+    <section class="stats-panel">
+      <!-- Target / Backdrops Goal -->
+      <div class="stat-card target-card">
+        <div class="stat-icon-wrap">
+          <label class="target-tile-checkbox-wrap" title="Нажмите, чтобы переключить стиль: рамка / сплошной задник">
+            <input type="checkbox" id="toggle-backdrop-style" class="target-checkbox-input">
+            <div class="target-tile-icon" id="target-tile-icon">
+              <svg class="check-mark-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+          </label>
+        </div>
+        <div class="stat-info">
+          <div class="stat-title">Задники ячеек</div>
+          <div class="stat-value">
+            <span id="backdrops-left">9</span>
+            <span class="stat-sub">/ <span id="backdrops-total">9</span></span>
+          </div>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Score & Info -->
+      <div class="stat-card score-card">
+        <div class="stat-info">
+          <div class="stat-title">Очки</div>
+          <div class="stat-value" id="score-value">0</div>
+        </div>
+        <div class="stat-badge" id="grid-size-badge">3×3</div>
+      </div>
+    </section>
+
+    <!-- Level Info banner -->
+    <div class="level-info-sub" id="level-info-sub">
+      <span id="info-grid-text">Поле: 3×3</span>
+      <span class="dot-separator">•</span>
+      <span id="info-colors-text">Цветов: 3</span>
+    </div>
+
+    <!-- Game Board Area -->
+    <main class="board-wrapper">
+      <div class="board-frame" id="board-frame">
+        <div class="board-grid" id="board-grid"></div>
+        <canvas id="effects-canvas"></canvas>
+      </div>
+    </main>
+
+    <!-- Bottom Controls & Hints -->
+    <footer class="game-footer">
+      <div class="hint-message" id="hint-message">Соберите 3 или 4 фишки в ряд!</div>
+    </footer>
+  </div>
+
+  <!-- Victory / Level Complete Modal -->
+  <div class="modal-overlay" id="modal-victory">
+    <div class="modal-card victory-card">
+      <div class="confetti-emitter"></div>
+      <div class="victory-icon-glow">🏆</div>
+      <h2 class="modal-title">Уровень пройден!</h2>
+      <p class="modal-text">Все задники ячеек успешно очищены!</p>
+      
+      <div class="modal-stats">
+        <div class="m-stat">
+          <span class="m-stat-label">Очки за уровень</span>
+          <span class="m-stat-val" id="modal-level-score">+500</span>
+        </div>
+        <div class="m-stat">
+          <span class="m-stat-label">Всего очков</span>
+          <span class="m-stat-val" id="modal-total-score">500</span>
+        </div>
+        <div class="m-stat next-preview">
+          <span class="m-stat-label">Следующее поле</span>
+          <span class="m-stat-val highlight" id="modal-next-grid">4×3</span>
+        </div>
+      </div>
+
+      <button id="btn-next-level" class="btn-primary">
+        <span>Следующий уровень</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Authentication Modal (Login / Register / Guest) -->
+  <div class="modal-overlay" id="modal-auth">
+    <div class="modal-card auth-card">
+      <button class="modal-close-btn" id="btn-close-auth">&times;</button>
+      <div class="auth-icon">🔐</div>
+      <h2 class="modal-title" id="auth-modal-title">Авторизация</h2>
+      <p class="modal-text">Войдите, чтобы сохранять максимальный открытый уровень в таблице рекордов!</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login">Вход</button>
+        <button class="auth-tab" id="tab-register">Регистрация</button>
+      </div>
+
+      <form id="auth-form" class="auth-form" onsubmit="return false;">
+        <div class="form-group">
+          <label for="auth-username" class="form-label">Имя пользователя (Логин)</label>
+          <input type="text" id="auth-username" class="form-input" placeholder="Введите имя..." required autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="auth-password" class="form-label">Пароль</label>
+          <input type="password" id="auth-password" class="form-input" placeholder="Введите пароль..." required autocomplete="current-password">
+        </div>
+
+        <div class="auth-status-msg" id="auth-status-msg"></div>
+
+        <button type="submit" id="btn-submit-auth" class="btn-primary">Войти</button>
+      </form>
+
+      <div class="auth-divider"><span>или</span></div>
+
+      <div class="auth-extra-actions">
+        <button id="btn-play-guest" class="btn-secondary">
+          <span>👤 Играть как гость</span>
+        </button>
+        <button id="btn-logout" class="btn-danger" style="display: none;">
+          <span>🚪 Выйти из аккаунта</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level Selection / Continue or Start Over Modal -->
+  <div class="modal-overlay" id="modal-level-select">
+    <div class="modal-card level-select-card">
+      <button class="modal-close-btn" id="btn-close-level-select">&times;</button>
+      <div class="modal-icon">🎯</div>
+      <h2 class="modal-title">Выбор уровня</h2>
+      <p class="modal-text">Вы можете продолжить с максимального открытого уровня или начать сначала.</p>
+
+      <div class="level-quick-actions">
+        <button id="btn-continue-game" class="btn-primary highlight-btn">
+          <span>▶ Продолжить (Уровень <span id="continue-level-num">1</span>)</span>
+        </button>
+        <button id="btn-start-over" class="btn-secondary">
+          <span>🔄 Начать сначала (Уровень 1)</span>
+        </button>
+      </div>
+
+      <div class="level-grid-title">Все открытые уровни:</div>
+      <div class="levels-container" id="levels-container">
+        <!-- Dynamically rendered level buttons -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Modal -->
+  <div class="modal-overlay" id="modal-leaderboard">
+    <div class="modal-card leaderboard-card">
+      <button class="modal-close-btn" id="btn-close-leaderboard">&times;</button>
+      <div class="modal-icon">🏆</div>
+      <h2 class="modal-title">Таблица рекордов</h2>
+      <p class="modal-text">Среди зарегистрированных игроков по открытым уровням (поле games)</p>
+
+      <div class="leaderboard-table-wrap">
+        <div class="leaderboard-header-row">
+          <span class="col-rank">#</span>
+          <span class="col-user">Игрок</span>
+          <span class="col-games">Макс. уровень</span>
+        </div>
+        <div class="leaderboard-list" id="leaderboard-list">
+          <div class="leaderboard-loading">Загрузка рекордов...</div>
+        </div>
+      </div>
+
+      <div class="leaderboard-footer">
+        <button id="btn-refresh-leaderboard" class="btn-secondary">
+          <span>🔄 Обновить</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rules / Tutorial Modal -->
+  <div class="modal-overlay" id="modal-rules">
+    <div class="modal-card rules-card">
+      <button class="modal-close-btn" id="btn-close-rules">&times;</button>
+      <h2 class="modal-title">Правила игры</h2>
+      
+      <div class="rules-content">
+        <div class="rule-item">
+          <div class="rule-icon">🔄</div>
+          <div class="rule-desc">
+            <strong>Перемещение:</strong> Меняйте местами две соседние фишки по горизонтали или вертикали кликом или перетаскиванием.
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-icon">✨</div>
+          <div class="rule-desc">
+            <strong>3 в ряд:</strong> Линия из 3 одинаковых фишек убирает их и снимает <em>«задник»</em> с этих ячеек.
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-icon">⚡</div>
+          <div class="rule-desc">
+            <strong>4 в ряд (Супер-удар):</strong> Линия из 4 фишек убирает <em>целый ряд или столбец</em> фишек и всех задников!
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-icon">🎯</div>
+          <div class="rule-desc">
+            <strong>Цель уровня:</strong> Очистите абсолютно все задники ячеек на поле, чтобы перейти на следующий уровень.
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-icon">📈</div>
+          <div class="rule-desc">
+            <strong>Развитие:</strong> С каждым уровнем поле увеличивается (3×3 → 4×3 → 4×4 → 5×4 → 5×5 ...). Когда поле становится квадратным, добавляется новый цвет фишек!
+          </div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-icon">👤</div>
+          <div class="rule-desc">
+            <strong>Аккаунт и рекорды:</strong> Зарегистрируйтесь, чтобы сохранять свой максимальный открытый уровень (поле <em>games</em>) и соревноваться в таблице лидеров!
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-start-playing" class="btn-primary">Понятно, играть!</button>
+    </div>
+  </div>
+
+  <!-- Toast Alert -->
+  <div class="toast-alert" id="toast-alert">
+    <span class="toast-icon">🔀</span>
+    <span class="toast-text" id="toast-text">Нет ходов! Перемешиваем...</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
